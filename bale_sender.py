@@ -4,14 +4,17 @@ from balethon import Client
 
 
 class BaleFileSender:
-    def __init__(self,  chat_id: str):
+    def __init__(self, chat_id: str):
         self.chat_id = chat_id
         self.bots = []
         self.index = 0
 
-        self._load_bots("config.json")
+        # config.json همیشه کنار همین فایل
+        self._load_bots()
 
-    def _load_bots(self, config_path: str):
+    def _load_bots(self):
+        config_path = "config.json"
+
         with open(config_path, "r", encoding="utf-8") as f:
             data = json.load(f)
 
