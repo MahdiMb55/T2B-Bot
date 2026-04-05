@@ -69,7 +69,6 @@ async def handle_download(event):
             result = do_file_split(path)
 
             sender = BaleFileSender(
-                config_path="config.json",
                 chat_id="4360823791"
             )
 
