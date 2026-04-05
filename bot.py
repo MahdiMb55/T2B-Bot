@@ -14,7 +14,11 @@ api_id = config["api_id"]
 api_hash = config["api_hash"]
 bot_token = config["bot_token"]
 
-parts = do_file_split("downloads/BAACAgQAAxkBAAEBAi9p0A0TA5vHbKl_aNPUqR1mOnsa7QACYxkAAt_FgVLzOips.mp4")
+result = do_file_split("downloads/BAACAgQAAxkBAAEBAi9p0A0TA5vHbKl_aNPUqR1mOnsa7QACYxkAAt_FgVLzOips.mp4", {"split_size_mb": 20})
+
+for part in result["files"]:
+    print(part)
+
 
 
 # client = TelegramClient("bot_session", api_id, api_hash)
