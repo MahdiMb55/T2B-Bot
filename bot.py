@@ -4,9 +4,9 @@ import asyncio
 from telethon import TelegramClient, events
 from splitter import split_file
 from zipper import do_file_split
-from bale_sender import BaleFileSender
+from bale_raw_sender import BaleRawSender
 
-
+sender = BaleRawSender(chat_id="4360823791")
 # load config
 with open("config.json") as f:
     config = json.load(f)
@@ -68,11 +68,8 @@ async def handle_download(event):
             
             result = do_file_split(path)
 
-            sender = BaleFileSender(
-                chat_id="4360823791"
-            )
-
             await sender.send_files(result["files"])
+            # اینجا میخوام ازش استفاده کنم 
 
 
         except Exception as e:
