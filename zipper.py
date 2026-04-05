@@ -13,7 +13,7 @@ import logzero
 
 logger = logzero.logger
 
-MAX_SPLIT_SIZE = 1495
+MAX_SPLIT_SIZE = 1
 
     def file_split_7z(file_path, split_size=MAX_SPLIT_SIZE):
         file_path_7z_list = []
