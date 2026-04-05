@@ -1,2 +1,5 @@
 config.json
 downloads
+bot_session.session
+__pycache__
+bot_session.session

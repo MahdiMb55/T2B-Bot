@@ -1,7 +1,9 @@
-import asyncio
 import json
 import os
+import asyncio
 from telethon import TelegramClient, events
+from splitter import split_file
+
 
 # load config
 with open("config.json") as f:
@@ -11,69 +13,72 @@ api_id = config["api_id"]
 api_hash = config["api_hash"]
 bot_token = config["bot_token"]
 
-client = TelegramClient("bot_session", api_id, api_hash)
+parts = split_file("downloads\BAACAgQAAxkBAAEBAi9p0A0TA5vHbKl_aNPUqR1mOnsa7QACYxkAAt_FgVLzOips.mp4")
 
 
-# پاسخ به سلام
-@client.on(events.NewMessage(pattern="سلام"))
-async def hello_handler(event):
-    await event.reply("علیک سلام")
+# client = TelegramClient("bot_session", api_id, api_hash)
+
+# # محدود کردن تعداد دانلود همزمان
+# semaphore = asyncio.Semaphore(2)  # مثلا 2 تا همزمان
 
 
-# دریافت فایل با progress
-@client.on(events.NewMessage)
-async def file_handler(event):
-    message = event.message
-
-    if not message.file:
-        return
-
-    try:
-        os.makedirs("downloads", exist_ok=True)
-
-        progress_msg = await event.reply("⬇️ شروع دانلود...")
-
-        last_percent = 0
-
-        async def progress(current, total):
-            nonlocal last_percent
-
-            percent = int((current / total) * 100)
-
-            # جلوگیری از اسپم (هر 5٪ آپدیت)
-            if percent - last_percent >= 5:
-                last_percent = percent
-                try:
-                    await progress_msg.edit(f"⬇️ در حال دانلود... {percent}%")
-                except:
-                    pass
-
-        # دانلود با progress
-        path = await client.download_media(
-            message,
-            file="downloads/",
-            progress_callback=progress
-        )
-
-        await progress_msg.edit(f"✅ دانلود کامل شد:\n{path}")
-
-    except Exception as e:
-        print("Error:", str(e))
-        await event.reply(f"❌ خطا: {str(e)}")
+# @client.on(events.NewMessage(pattern="سلام"))
+# async def hello_handler(event):
+#     await event.reply("علیک سلام")
 
 
-async def main():
-    await client.start(bot_token=bot_token)
-    print("🤖 Bot started")
-    await client.run_until_disconnected()
+# @client.on(events.NewMessage)
+# async def file_handler(event):
+#     if not event.message.file:
+#         return
+
+#     # هر فایل در یک task جدا
+#     asyncio.create_task(handle_download(event))
 
 
-try:
-    with client:
-        client.loop.run_until_complete(main())
-except KeyboardInterrupt:
-    print("\n⛔ Bot stopped")
+# async def handle_download(event):
+#     async with semaphore:  # کنترل همزمانی
+#         message = event.message
+
+#         try:
+#             os.makedirs("downloads", exist_ok=True)
+
+#             progress_msg = await event.reply("⬇️ شروع دانلود...")
+
+#             last_percent = 0
+
+#             async def progress(current, total):
+#                 nonlocal last_percent
+
+#                 percent = int((current / total) * 100)
+
+#                 if percent - last_percent >= 5:
+#                     last_percent = percent
+#                     try:
+#                         await progress_msg.edit(f"⬇️ در حال دانلود... {percent}%")
+#                     except:
+#                         pass
+
+#             path = await client.download_media(
+#                 message,
+#                 file="downloads/",
+#                 progress_callback=progress
+#             )
+
+#             await progress_msg.edit(f"✅ دانلود کامل شد:\n{path}")
+
+#         except Exception as e:
+#             print("Error:", str(e))
+#             await event.reply(f"❌ خطا: {str(e)}")
 
 
-if __name__ == "__main__":
-    asyncio.run(main())
+# async def main():
+    # await client.start(bot_token=bot_token)
+    # print("🤖 Bot started")
+    # await client.run_until_disconnected()
+
+
+# ✅ اجرای درست Telethon
+# if __name__ == "__main__":
+#     with client:
+#         client.loop.run_until_complete(main())
